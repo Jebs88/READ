@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Textarea to Table</title>
+    <style>
+        body {
+            background-color: black;
+            color: #808080; /* Grey color for text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+#paraInput {
+    overflow: auto;
+}
+        #contentWrapper {
+            text-align: center;
+            padding: 0 100px; /* 100px padding on both sides */
+        }
+
+        textarea {
+            display: block;
+            margin: 10px auto;
+            background-color: black;
+            border: 1px solid #808080; /* Grey border for textarea */
+            color: #808080; /* Grey color for text in textarea */
+        }
+        
+        #paraInput {
+    font-size: 21px;
+}
+
+        button {
+            background-color: #808080; /* Grey background for buttons */
+            color: black;
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="contentWrapper">
+        <!-- Table to display paragraphs -->
+      
+        <!-- Textarea and Buttons for upper textarea -->
+        <button class="hideable" onclick="hideElements()">Hide</button>
+<button onclick="showElements()">Show All</button>
+<br><br>
+        
+                <button class="hideable" onclick="clearUpperTextarea()">Clear Upper Textarea</button>
+                <button class="hideable" onclick="clearAllTextareas()">Clear All</button>
+        
+        
+        <textarea id="paraInput" rows="5" cols="25" placeholder="Type your paragraph here"></textarea>
+        
+                <button class="hideable" onclick="selectAllText()">Select All (Upper)</button>
+                <button class="hideable" onclick="removeEmptyLines()">Remove Empty Lines</button>
+<br><br>
+        <button class="hideable" onclick="removeCharacterFromStart()">xStart</button>
+<button class="hideable" onclick="removeCharacterFromEnd()">xEnd</button>
+<button class="hideable" onclick="makeUppercase()">Uppercase</button>
+
+
+                
+                
+         <textarea class="hideable" id="prefixInput" rows="2" cols="25" placeholder="Type the prefix here"></textarea>
+         <textarea class="hideable" id="suffixInput" rows="2" cols="25" placeholder="Type the suffix here"></textarea>
+         <textarea class="hideable" id="replaceFromInput" rows="2" cols="25" placeholder="Replace this..."></textarea>
+         <textarea class="hideable" id="replaceToInput" rows="2" cols="25" placeholder="...with this"></textarea>
+         <button class="hideable" onclick="replaceText()">Replace</button>
+         <button class="hideable" onclick="enableLineSelection()">ON-S</button>
+        <button class="hideable" onclick="disableLineSelection()">OFF-S</button>
+
+         
+         <br><br>
+         <button class="hideable" onclick="addPrefixToPara()">Add Prefix</button>
+        <button class="hideable" onclick="addSuffixToPara()">Add Suffix</button><br><br>
+
+
+   
+        <button class="hideable" onclick="addExclamationToLines()">!</button>
+        <button class="hideable" onclick="removeNumbers()">Xnum</button>
+        <button class="hideable" onclick="arrangeByNumber()">Arrange</button>
+
+        <br><br>
+        <button class="hideable" onclick="numberLinesOF()">Number 1,5</button>
+        <button class="hideable" onclick="numberLinesOS()">Number 1,6</button>
+
+       
+
+    <script>
+    
+    function makeUppercase() {
+    const textarea = document.getElementById('paraInput');
+    textarea.value = textarea.value.toUpperCase();
+}
+
+    
+    
+    function hideElements() {
+    const elementsToHide = document.querySelectorAll('.hideable'); // select all elements with class "hideable"
+    elementsToHide.forEach(el => el.style.display = 'none'); // hide each element
+
+    document.querySelector("#showButton").style.display = "inline-block"; // show the "Show All" button
+}
+
+function showElements() {
+    const elementsToShow = document.querySelectorAll('.hideable');
+    elementsToShow.forEach(el => el.style.display = ''); // restore original display style
+
+    document.querySelector("#showButton").style.display = "none"; // hide the "Show All" button
+}
+
+    
+    
+    function removeCharacterFromStart() {
+    const textarea = document.getElementById('paraInput');
+    const lines = textarea.value.split('\n');
+
+    // Remove a single character from the start of each line
+    const processedLines = lines.map(line => line.replace(/^./, ''));
+
+    textarea.value = processedLines.join('\n');
+}
+
+function removeCharacterFromEnd() {
+    const textarea = document.getElementById('paraInput');
+    const lines = textarea.value.split('\n');
+
+    // Remove a single character from the end of each line
+    const processedLines = lines.map(line => line.replace(/.$/, ''));
+
+    textarea.value = processedLines.join('\n');
+}
+
+    
+    
+    function removeStartingCharacters() {
+    const textarea = document.getElementById('paraInput');
+    const lines = textarea.value.split('\n');
+
+    // Remove all characters at the start of each line up to the first space
+    const processedLines = lines.map(line => line.replace(/^[^\s]*\s*/, ''));
+    
+    textarea.value = processedLines.join('\n');
+}
+
+function removeTrailingCharacters() {
+    const textarea = document.getElementById('paraInput');
+    const lines = textarea.value.split('\n');
+
+    // Remove all characters at the end of each line back to the last space
+    const processedLines = lines.map(line => line.replace(/\s*[^\s]*$/, ''));
+    
+    textarea.value = processedLines.join('\n');
+}
+
+    
+    
+    function makeUppercase() {
+    const textarea = document.getElementById('paraInput');
+    textarea.value = textarea.value.toUpperCase();
+}
+
+    
+    function removeEmptyLines() {
+    const textarea = document.getElementById('paraInput');
+    const lines = textarea.value.split('\n'); // Split by lines
+    const nonEmptyLines = lines.filter(line => line.trim() !== ''); // Filter out empty or whitespace-only lines
+    textarea.value = nonEmptyLines.join('\n'); // Join the lines back together
+}
+
+    
+
+    
+    let isLineSelectionActive = false; // By default, it's off
+
+        function selectLineOnClick(event) {
+            const textarea = event.target;
+            let startPos = textarea.selectionStart;
+            let endPos = textarea.selectionEnd;
+            const content = textarea.value;
+
+            // Find the start position of the clicked line
+            while (startPos > 0 && content[startPos - 1] !== '\n') {
+                startPos--;
+            }
+
+            // Find the end position of the clicked line
+            while (endPos < content.length && content[endPos] !== '\n') {
+                endPos++;
+            }
+
+            // Set the selection range to select the entire line
+            textarea.selectionStart = startPos;
+            textarea.selectionEnd = endPos;
+        }
+
+        function enableLineSelection() {
+            isLineSelectionActive = true;
+            // Add the event listener to enable line selection
+            document.getElementById('paraInput').addEventListener('click', selectLineOnClick);
+            console.log('Line selection is:', isLineSelectionActive ? 'ENABLED' : 'DISABLED');
+        }
+
+        function disableLineSelection() {
+            isLineSelectionActive = false;
+            // Remove the event listener to disable line selection
+            document.getElementById('paraInput').removeEventListener('click', selectLineOnClick);
+            console.log('Line selection is:', isLineSelectionActive ? 'ENABLED' : 'DISABLED');
+        }
+
+
+    
+
+
+
+    function clearAllTextareas() {
+    document.getElementById('paraInput').value = '';
+    document.getElementById('prefixInput').value = '';
+    document.getElementById('suffixInput').value = '';
+    document.getElementById('replaceFromInput').value = '';
+    document.getElementById('replaceToInput').value = '';
+    }
+    
+    function replaceText() {
+            const paraTextarea = document.getElementById('paraInput');
+            const replaceFromTextarea = document.getElementById('replaceFromInput');
+            const replaceToTextarea = document.getElementById('replaceToInput');
+
+            const replaceFrom = new RegExp(escapeRegExp(replaceFromTextarea.value), 'g');
+            const replaceTo = replaceToTextarea.value;
+
+            paraTextarea.value = paraTextarea.value.replace(replaceFrom, replaceTo);
+        }
+
+        // Utility function to escape regular expression characters
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+        }
+        function replaceText() {
+            const paraTextarea = document.getElementById('paraInput');
+            const replaceFromTextarea = document.getElementById('replaceFromInput');
+            const replaceToTextarea = document.getElementById('replaceToInput');
+
+            const replaceFrom = new RegExp(escapeRegExp(replaceFromTextarea.value), 'g');
+            const replaceTo = replaceToTextarea.value;
+
+            paraTextarea.value = paraTextarea.value.replace(replaceFrom, replaceTo);
+        }
+
+        // Utility function to escape regular expression characters
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+        }
+    
+    function addPrefixToPara() {
+            const paraTextarea = document.getElementById('paraInput');
+            const prefixTextarea = document.getElementById('prefixInput');
+            
+            const prefix = prefixTextarea.value;
+            let lines = paraTextarea.value.split('\n').map(line => {
+                return prefix + line;
+            });
+            
+            paraTextarea.value = lines.join('\n');
+        }
+        function addParaToTable() {
+            const paraValue = document.getElementById('paraInput').value;
+            if (paraValue.trim() !== "") {
+                const newRow = document.createElement('tr');
+                const newCell = document.createElement('td');
+                newCell.innerHTML = paraValue.replace(/\n/g, '<br>');
+                newRow.appendChild(newCell);
+                document.getElementById('paraTable').querySelector('tbody').appendChild(newRow);
+                document.getElementById('paraInput').value = "";
+            } else {
+                alert("Please enter a paragraph!");
+            }
+        }
+
+    function addExclamationToLines() {
+    const textarea = document.getElementById('paraInput');
+    let lines = textarea.value.split('\n').map(line => {
+        if (line.trim() !== '' && !line.endsWith('!')) {
+            return line + '!';
+        }
+        return line;
+    });
+    textarea.value = lines.join('\n');
+}
+
+
+        function removeNumbers() {
+            const textarea = document.getElementById('paraInput');
+            textarea.value = textarea.value.replace(/\b\d{1,2}\b/g, '');
+        }
+
+        function arrangeByNumber() {
+            const textarea = document.getElementById('paraInput');
+            let lines = textarea.value.split('\n').filter(line => line.trim() !== '');
+
+            lines.sort((a, b) => {
+                let numA = parseFloat(a.split(' ')[0]);
+                let numB = parseFloat(b.split(' ')[0]);
+
+                if (isNaN(numA) || isNaN(numB)) return 0;
+                return numA - numB;
+            });
+
+            textarea.value = lines.join('\n');
+        }
+
+        function selectAllText() {
+            const textarea = document.getElementById('paraInput');
+            textarea.focus();
+            textarea.select();
+        }
+
+        function selectAllTextLower() {
+            const textarea = document.getElementById('outputTextarea');
+            textarea.focus();
+            textarea.select();
+        }
+
+        function transferToTextarea() {
+            const paragraphs = document.querySelectorAll('#paraTable tbody td');
+            let outputContent = "";
+
+            paragraphs.forEach(paragraph => {
+                // Convert <br> tags to newline characters for textarea
+                let paraContent = paragraph.innerHTML.replace(/<br>/g, '\n');
+                outputContent += paraContent + '\n';
+            });
+
+            document.getElementById('outputTextarea').value = outputContent.trim();
+        }
+
+        function numberLinesOF() {
+            const numbers = [1,5,9,13,17,2,6,10,14,18,3,7,11,15,19,4,8,12,16,20];
+            const textarea = document.getElementById('paraInput');
+            const lines = textarea.value.split('\n');
+
+            for (let i = 0; i < Math.min(lines.length, numbers.length); i++) {
+                lines[i] = numbers[i] + " " + lines[i];
+            }
+
+            textarea.value = lines.join('\n');
+        }
+        
+        function numberLinesOS() {
+        const numbers = [1,6,11,16,2,7,12,17,3,8,13,18,4,9,14,19,5,10,15,20];
+            const textarea = document.getElementById('paraInput');
+            const lines = textarea.value.split('\n');
+
+            for (let i = 0; i < Math.min(lines.length, numbers.length); i++) {
+                lines[i] = numbers[i] + " " + lines[i];
+            }
+
+            textarea.value = lines.join('\n');
+        }
+        
+
+        function numberLinesSequentially() {
+            const textarea = document.getElementById('paraInput');
+            const lines = textarea.value.split('\n');
+
+            for (let i = 0; i < Math.min(lines.length, 20); i++) {
+                lines[i] = (i + 1) + " " + lines[i];
+            }
+
+            textarea.value = lines.join('\n');
+        }
+
+        function clearUpperTextarea() {
+            document.getElementById('paraInput').value = '';
+        }
+
+        function clearLowerTextarea() {
+            document.getElementById('outputTextarea').value = '';
+        }
+        
+        
+        
+        function enableLineSelection() {
+    isLineSelectionActive = true;
+    // Add the event listener to enable line selection
+    document.getElementById('paraInput').addEventListener('click', selectLineOnClick);
+    
+    // Make the textarea readonly to potentially prevent the virtual keyboard from showing up
+    document.getElementById('paraInput').readOnly = true;
+    
+    console.log('Line selection is:', isLineSelectionActive ? 'ENABLED' : 'DISABLED');
+}
+
+function disableLineSelection() {
+    isLineSelectionActive = false;
+    // Remove the event listener to disable line selection
+    document.getElementById('paraInput').removeEventListener('click', selectLineOnClick);
+    
+    // Make the textarea editable again
+    document.getElementById('paraInput').readOnly = false;
+    
+    console.log('Line selection is:', isLineSelectionActive ? 'ENABLED' : 'DISABLED');
+}
+
+        
+        
+    </script>
+
+</body>
+
+</html>
