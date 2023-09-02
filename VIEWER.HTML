@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Code Viewer</title>
+    <style>
+        #output {
+            border: 1px solid black;
+            padding: 10px;
+            margin-top: 20px;
+            width: 100%;
+            min-height: 300px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+
+<textarea id="inputArea" rows="10" cols="50" placeholder="Enter your HTML code here..."></textarea>
+<br>
+<input type="checkbox" id="autoRefresh"> Auto Refresh
+<br>
+<button onclick="showHtml()">Show HTML Design</button>
+<button onclick="clearText()">Clear</button>
+<button onclick="undoChange()">Undo</button>
+<button onclick="redoChange()">Redo</button>
+<div id="output">Your design will appear here...</div>
+
+<script>
+    let history = [];
+    let redoStack = [];
+    let currentContent = "";
+
+    function showHtml() {
+        const input = document.getElementById('inputArea').value;
+        const output = document.getElementById('output');
+        output.innerHTML = input;
+    }
+
+    function clearText() {
+        if (confirm("Are you sure you want to clear the text?")) {
+            history.push(document.getElementById('inputArea').value);
+            redoStack = []; // Clear the redo stack when a new change is made
+            document.getElementById('inputArea').value = "";
+            if (document.getElementById('autoRefresh').checked) {
+                showHtml();
+            }
+        }
+    }
+
+    function undoChange() {
+        const inputArea = document.getElementById('inputArea');
+        if (history.length > 0) {
+            redoStack.push(inputArea.value);
+            inputArea.value = history.pop();
+            if (document.getElementById('autoRefresh').checked) {
+                showHtml();
+            }
+        }
+    }
+
+    function redoChange() {
+        if (redoStack.length > 0) {
+            const inputArea = document.getElementById('inputArea');
+            history.push(inputArea.value);
+            inputArea.value = redoStack.pop();
+            if (document.getElementById('autoRefresh').checked) {
+                showHtml();
+            }
+        }
+    }
+
+    const autoRefreshCheckbox = document.getElementById('autoRefresh');
+    const inputArea = document.getElementById('inputArea');
+    
+    inputArea.addEventListener('input', function() {
+        if (currentContent !== inputArea.value) {
+            history.push(currentContent);
+            redoStack = []; // Clear the redo stack when a new change is made
+            currentContent = inputArea.value;
+        }
+        
+        if (autoRefreshCheckbox.checked) {
+            showHtml();
+        }
+    });
+
+</script>
+
+</body>
+</html>
