@@ -72,11 +72,15 @@
 <br>
         
         <textarea id="paraInput" rows="5" cols="15" placeholder="Type your paragraph here"></textarea>
+
+	    <button class="hideable" onclick="undo()">Undo</button>
+<button class="hideable" onclick="redo()">Redo</button>
+	    
         <textarea id="reference" rows="7" cols="25" placeholder="Reference"></textarea>
 	    
                 <button class="hideable" onclick="selectAllText()">Select All (Upper)</button>
                 <button class="hideable" onclick="removeEmptyLines()">Remove Empty Lines</button>
-<br>
+<br><br>
         <button class="hideable" onclick="removeCharacterFromStart()">xStart</button>
 <button class="hideable" onclick="removeCharacterFromEnd()">xEnd</button>
 <button class="hideable" onclick="makeUppercase()">Uppercase</button>
@@ -85,10 +89,7 @@
                 
                 
          <textarea class="hideable" id="prefixInput" rows="2" cols="25" placeholder="Type the prefix here"></textarea>
-<button class="hideable" onclick="undo()">Undo</button>
-<button class="hideable" onclick="redo()">Redo</button>
 
-		
          <textarea class="hideable" id="suffixInput" rows="2" cols="25" placeholder="Type the suffix here"></textarea>
          <textarea class="hideable" id="replaceFromInput" rows="2" cols="25" placeholder="Replace this..."></textarea>
          <textarea class="hideable" id="replaceToInput" rows="2" cols="25" placeholder="...with this"></textarea>
