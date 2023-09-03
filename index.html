@@ -66,8 +66,9 @@
         <button class="hideable" onclick="hideElements()">Hide</button>
 <button onclick="showElements()">Show All</button>
 <br><br>
-        
-                
+        <button onclick="copySelectedLine()">Copy Selected Line</button>
+
+       <br><br>         
         
         <textarea id="paraInput" rows="5" cols="25" placeholder="Type your paragraph here"></textarea>
         
@@ -194,25 +195,33 @@ function removeTrailingCharacters() {
     let isLineSelectionActive = false; // By default, it's off
 
         function selectLineOnClick(event) {
-            const textarea = event.target;
-            let startPos = textarea.selectionStart;
-            let endPos = textarea.selectionEnd;
-            const content = textarea.value;
+    const textarea = event.target;
+    let startPos = textarea.selectionStart;
+    let endPos = textarea.selectionEnd;
+    const content = textarea.value;
 
-            // Find the start position of the clicked line
-            while (startPos > 0 && content[startPos - 1] !== '\n') {
-                startPos--;
-            }
+    // Find the start position of the clicked line
+    while (startPos > 0 && content[startPos - 1] !== '\n') {
+        startPos--;
+    }
 
-            // Find the end position of the clicked line
-            while (endPos < content.length && content[endPos] !== '\n') {
-                endPos++;
-            }
+    // Find the end position of the clicked line
+    while (endPos < content.length && content[endPos] !== '\n') {
+        endPos++;
+    }
 
-            // Set the selection range to select the entire line
-            textarea.selectionStart = startPos;
-            textarea.selectionEnd = endPos;
-        }
+    // Set the selection range to select the entire line
+    textarea.selectionStart = startPos;
+    textarea.selectionEnd = endPos;
+
+    // Copy the selected line to the clipboard
+    const selectedLine = content.substring(startPos, endPos);
+    copyToClipboard(selectedLine);
+}
+
+
+
+
 
         function enableLineSelection() {
             isLineSelectionActive = true;
@@ -230,6 +239,23 @@ function removeTrailingCharacters() {
 
 
     
+		function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        console.log('Text successfully copied to clipboard.');
+    }).catch(err => {
+        console.error('Could not copy text to clipboard:', err);
+    });
+}
+
+
+function copySelectedLine() {
+    const textarea = document.getElementById('paraInput');
+    const selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+
+    if (selectedText) {
+        copyToClipboard(selectedText);
+    }
+}
 
 
 
