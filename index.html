@@ -109,14 +109,17 @@
 
 
 function clearUpperTextarea() {
-    document.getElementById('paraInput1').value = '';
-    alert('Upper textarea cleared!');
+    if (confirm('Are you sure you want to clear the upper textarea?')) {
+        document.getElementById('paraInput1').value = '';
+    }
 }
 
 function clearAnotherTextarea() {
-    document.getElementById('paraInput2').value = '';
-    alert('Another textarea cleared!');
+    if (confirm('Are you sure you want to clear the other textarea?')) {
+        document.getElementById('paraInput2').value = '';
+    }
 }
+
 
 	    
     
