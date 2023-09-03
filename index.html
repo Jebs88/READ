@@ -12,11 +12,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
+	overflow-y: auto;
+    height: 100%;
         }
 
+
+
+	    
 #paraInput {
     overflow: auto;
 }
@@ -65,14 +69,14 @@
         <!-- Textarea and Buttons for upper textarea -->
         <button class="hideable" onclick="hideElements()">Hide</button>
 <button onclick="showElements()">Show All</button>
-<br><br>
+<br>
         
         <textarea id="paraInput" rows="5" cols="15" placeholder="Type your paragraph here"></textarea>
         <textarea id="reference" rows="7" cols="25" placeholder="Reference"></textarea>
 	    
                 <button class="hideable" onclick="selectAllText()">Select All (Upper)</button>
                 <button class="hideable" onclick="removeEmptyLines()">Remove Empty Lines</button>
-<br><br>
+<br>
         <button class="hideable" onclick="removeCharacterFromStart()">xStart</button>
 <button class="hideable" onclick="removeCharacterFromEnd()">xEnd</button>
 <button class="hideable" onclick="makeUppercase()">Uppercase</button>
@@ -81,6 +85,10 @@
                 
                 
          <textarea class="hideable" id="prefixInput" rows="2" cols="25" placeholder="Type the prefix here"></textarea>
+<button class="hideable" onclick="undo()">Undo</button>
+<button class="hideable" onclick="redo()">Redo</button>
+
+		
          <textarea class="hideable" id="suffixInput" rows="2" cols="25" placeholder="Type the suffix here"></textarea>
          <textarea class="hideable" id="replaceFromInput" rows="2" cols="25" placeholder="Replace this..."></textarea>
          <textarea class="hideable" id="replaceToInput" rows="2" cols="25" placeholder="...with this"></textarea>
@@ -114,9 +122,15 @@ function clearUpperTextarea() {
     }
 }
 
-function clearAnotherTextarea() {
+ 
+
+function clearAllTextareas() {
     if (confirm('Are you sure you want to clear the other textarea?')) {
-        document.getElementById('paraInput2').value = '';
+        document.getElementById('paraInput').value = '';
+    document.getElementById('prefixInput').value = '';
+    document.getElementById('suffixInput').value = '';
+    document.getElementById('replaceFromInput').value = '';
+    document.getElementById('replaceToInput').value = '';
     }
 }
 
@@ -273,13 +287,7 @@ function copySelectedLine() {
 
 
 
-    function clearAllTextareas() {
-    document.getElementById('paraInput').value = '';
-    document.getElementById('prefixInput').value = '';
-    document.getElementById('suffixInput').value = '';
-    document.getElementById('replaceFromInput').value = '';
-    document.getElementById('replaceToInput').value = '';
-    }
+    
     
     function replaceText() {
             const paraTextarea = document.getElementById('paraInput');
@@ -456,7 +464,36 @@ function disableLineSelection() {
     console.log('Line selection is:', isLineSelectionActive ? 'ENABLED' : 'DISABLED');
 }
 
-        
+
+
+let history = [];
+let position = -1;
+
+// Update history whenever there's a change
+document.getElementById('paraInput1').addEventListener('input', function() {
+    // Remove elements that should not be redo-able
+    history = history.slice(0, position + 1);
+    
+    history.push(this.value);
+    position++;
+});
+
+function undo() {
+    if (position > 0) {
+        position--;
+        document.getElementById('paraInput1').value = history[position];
+    }
+}
+
+function redo() {
+    if (position < history.length - 1) {
+        position++;
+        document.getElementById('paraInput1').value = history[position];
+    }
+}
+
+
+	    
         
     </script>
 
