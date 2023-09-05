@@ -475,7 +475,7 @@ let history = [];
 let position = -1;
 
 // Update history whenever there's a change
-document.getElementById('paraInput1').addEventListener('input', function() {
+document.getElementById('paraInput').addEventListener('input', function() {
     // Remove elements that should not be redo-able
     history = history.slice(0, position + 1);
     
@@ -486,14 +486,14 @@ document.getElementById('paraInput1').addEventListener('input', function() {
 function undo() {
     if (position > 0) {
         position--;
-        document.getElementById('paraInput1').value = history[position];
+        document.getElementById('paraInput').value = history[position];
     }
 }
 
 function redo() {
     if (position < history.length - 1) {
         position++;
-        document.getElementById('paraInput1').value = history[position];
+        document.getElementById('paraInput').value = history[position];
     }
 }
 
