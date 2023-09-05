@@ -336,6 +336,23 @@ function copySelectedLine() {
             
             paraTextarea.value = lines.join('\n');
         }
+
+	   function addSuffixToPara() {
+    const paraTextarea = document.getElementById('paraInput');
+    const suffix = document.getElementById('suffixInput').value;
+    
+    const lines = paraTextarea.value.split('\n');
+    const suffixedLines = lines.map(line => line + suffix);
+    
+    paraTextarea.value = suffixedLines.join('\n');
+}
+ 
+
+
+
+
+	    
+
         function addParaToTable() {
             const paraValue = document.getElementById('paraInput').value;
             if (paraValue.trim() !== "") {
